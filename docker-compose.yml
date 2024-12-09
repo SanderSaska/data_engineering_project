@@ -26,12 +26,17 @@ services:
     ports:
       - "3306:3306"
 
+
   duckdb:
-    image: duckdb/duckdb
+    container_name: duckdb
+    build:
+      context: ./docker/duckdb  # Path to DuckDB Dockerfile
     volumes:
-      - ./star_schema:/data
-    ports:
-      - "9000:9000"
+      - ./raw_data:/app/data  # Mount raw_data directory for persistent storage
+    stdin_open: true
+    tty: true
+    networks:
+      - data_network
 
   airflow:
     build: ./airflow
