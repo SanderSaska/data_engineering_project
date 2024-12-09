@@ -1,3 +1,5 @@
+version: "3.9"
+
 x-airflow-common: &airflow-common
   image: apache/airflow:2.7.1
   environment: &airflow-common-env
@@ -22,28 +24,29 @@ x-airflow-common: &airflow-common
       condition: service_healthy
 
 services:
-  # Postgres database for Airflow
+  # PostgreSQL Service
   postgres:
     image: postgres:13
     ports:
-      - 5433:5432
+      - "5432:5432"
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow  # Automatically creates 'airflow' database
+      POSTGRES_DB: airflow
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 5s
+      timeout: 10s
       retries: 5
     restart: always
 
-  # Redis as a message broker for CeleryExecutor
+  # Redis Service
   redis:
     image: redis:latest
     ports:
-      - 6379:6379
+      - "6379:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -56,7 +59,7 @@ services:
     <<: *airflow-common
     command: webserver
     ports:
-      - 8080:8080
+      - "8080:8080"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 10s
@@ -85,21 +88,23 @@ services:
     command: celery worker
     healthcheck:
       test:
-        - "CMD-SHELL"
-        - 'celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}"'
+        [
+          "CMD-SHELL",
+          'celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}"',
+        ]
       interval: 10s
       timeout: 10s
       retries: 5
     restart: always
 
-  # Airflow Initialization Service
+  # Airflow Initialization
   airflow-init:
     <<: *airflow-common
     entrypoint: /bin/bash
     command:
       - -c
       - |
-        airflow db init
+        airflow db init &&
         airflow users create \
           --username ${_AIRFLOW_WWW_USER_USERNAME:-airflow} \
           --password ${_AIRFLOW_WWW_USER_PASSWORD:-airflow} \
@@ -116,12 +121,12 @@ services:
     volumes:
       - ./airflow:/opt/airflow
 
-  # Flower for monitoring Celery
+  # Flower Monitoring
   flower:
     <<: *airflow-common
     command: celery flower
     ports:
-      - 5555:5555
+      - "5555:5555"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:5555/"]
       interval: 10s
