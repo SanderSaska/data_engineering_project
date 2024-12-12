@@ -1,0 +1,142 @@
+[
+    {
+        "lat": 47.59397,
+        "lon": 14.12456,
+        "tz": "+02:00",
+        "date": "2024-03-04",
+        "units": "standard",
+        "cloud_cover": {
+            "afternoon": 0
+        },
+        "humidity": {
+            "afternoon": 33
+        },
+        "precipitation": {
+            "total": 0
+        },
+        "temperature": {
+            "min": 286.48,
+            "max": 299.24,
+            "afternoon": 296.15,
+            "night": 289.56,
+            "evening": 295.93,
+            "morning": 287.59
+        },
+        "pressure": {
+            "afternoon": 1015
+        },
+        "wind": {
+            "max": {
+                "speed": 8.7,
+                "direction": 120
+            }
+        },
+        "country": "Austria",
+        "country_code": "AT"
+    },
+    {
+        "lat": 50.6402809,
+        "lon": 4.6667145,
+        "tz": "+02:00",
+        "date": "2024-03-04",
+        "units": "standard",
+        "cloud_cover": {
+            "afternoon": 0
+        },
+        "humidity": {
+            "afternoon": 33
+        },
+        "precipitation": {
+            "total": 0
+        },
+        "temperature": {
+            "min": 286.48,
+            "max": 299.24,
+            "afternoon": 296.15,
+            "night": 289.56,
+            "evening": 295.93,
+            "morning": 287.59
+        },
+        "pressure": {
+            "afternoon": 1015
+        },
+        "wind": {
+            "max": {
+                "speed": 8.7,
+                "direction": 120
+            }
+        },
+        "country": "Belgium",
+        "country_code": "BE"
+    },
+    {
+        "lat": 42.6073975,
+        "lon": 25.4856617,
+        "tz": "+02:00",
+        "date": "2024-03-04",
+        "units": "standard",
+        "cloud_cover": {
+            "afternoon": 0
+        },
+        "humidity": {
+            "afternoon": 33
+        },
+        "precipitation": {
+            "total": 0
+        },
+        "temperature": {
+            "min": 286.48,
+            "max": 299.24,
+            "afternoon": 296.15,
+            "night": 289.56,
+            "evening": 295.93,
+            "morning": 287.59
+        },
+        "pressure": {
+            "afternoon": 1015
+        },
+        "wind": {
+            "max": {
+                "speed": 8.7,
+                "direction": 120
+            }
+        },
+        "country": "Bulgaria",
+        "country_code": "BG"
+    },
+    {
+        "lat": 45.3658443,
+        "lon": 15.6575209,
+        "tz": "+02:00",
+        "date": "2024-03-04",
+        "units": "standard",
+        "cloud_cover": {
+            "afternoon": 0
+        },
+        "humidity": {
+            "afternoon": 33
+        },
+        "precipitation": {
+            "total": 0
+        },
+        "temperature": {
+            "min": 286.48,
+            "max": 299.24,
+            "afternoon": 296.15,
+            "night": 289.56,
+            "evening": 295.93,
+            "morning": 287.59
+        },
+        "pressure": {
+            "afternoon": 1015
+        },
+        "wind": {
+            "max": {
+                "speed": 8.7,
+                "direction": 120
+            }
+        },
+        "country": "Croatia",
+        "country_code": "HR"
+    }
+]
