@@ -49,5 +49,6 @@ def clone_repo(repo_url: str, repo_dir: str):
 
 if __name__ == "__main__":
     repo_url = "https://github.com/EU-ECDC/Respiratory_viruses_weekly_data.git"
-    repo_dir = "../raw_data/Respiratory_viruses_weekly_data"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    repo_dir = os.path.join(script_dir,"../raw_data/Respiratory_viruses_weekly_data")
     manage_git_repo(repo_url, repo_dir)
