@@ -1,63 +1,80 @@
 -- Create Tables
 
---TODO: 
--- * Muuta veergude nimed ja tüübid vastavaks
--- * Lisada veerud mõnele tabelile
+-- Air quality tables
 
--- Weather-related tables
 CREATE TABLE airQuality (
-    "ID" INTEGER PRIMARY KEY,
-    "Samplingpoint" TEXT,
-    "Pollutant" INTEGER,
+    id INTEGER PRIMARY KEY,
+    Samplingpoint TEXT,
+    Pollutant INTEGER,
     "Start" TIMESTAMP,
     "End" TIMESTAMP,
     "Value" DECIMAL(38, 18),
-    "Unit" TEXT,
-    "AggType" TEXT,
-    "Validity" INTEGER,
-    "Verification" INTEGER,
-    "ResultTime" TIMESTAMP,
-    "DataCapture" DECIMAL(38, 18),
-    "FkObservationLog" TEXT,
-    "FileName" TEXT
+    Unit TEXT,
+    AggType TEXT,
+    Validity INTEGER,
+    Verification INTEGER,
+    ResultTime TIMESTAMP,
+    DataCapture DECIMAL(38, 18),
+    FkObservationLog TEXT,
+    "fileName" TEXT
 );
 
 CREATE TABLE airQualityDescriptors (
-    "ID" SERIAL PRIMARY KEY,
-    URI TEXT,
+    id INTEGER PRIMARY KEY,
     Label TEXT,
     "Definition" TEXT,
-    Notation TEXT,
-    "Status" TEXT
+    Notation TEXT
 );
 
+-- Calendar
+
 CREATE TABLE calendar (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     "Year" INTEGER,
     "Quarter" INTEGER,
     "Month" INTEGER,
     "Week" INTEGER,
-    "Day" INTEGER,  -- Fixed the typo here
+    "Day" INTEGER,
     Date_time TIMESTAMP
 );
 
+-- Weather-related tables
+
 CREATE TABLE country (
-    "ID" SERIAL PRIMARY KEY,
-    "Name" TEXT,
-    Lat NUMERIC,
-    Lon NUMERIC,
-    Country_code TEXT
+    id INTEGER PRIMARY KEY,
+    "name" TEXT,
+    lat NUMERIC,
+    lon NUMERIC,
+    country_code TEXT
 );
 
 CREATE TABLE weather (
-    "ID" SERIAL PRIMARY KEY,
-    Temperature NUMERIC,  -- Example column, update as needed
-    Humidity NUMERIC,     -- Example column, update as needed
-    WindSpeed NUMERIC     -- Example column, update as needed
+    id INTEGER PRIMARY KEY,
+    lat NUMERIC,
+    lon NUMERIC,
+    tz TEXT,
+    "date" TEXT,
+    units TEXT,
+    cloud_cover_afternoon  INTEGER,
+    humidity_afternoon INTEGER,
+    precipitation_total INTEGER,
+    temperature_min NUMERIC,
+    temperature_max NUMERIC,
+    temperature_afternoon NUMERIC,
+    temperature_night NUMERIC,
+    temperature_evening NUMERIC,
+    temperature_morning NUMERIC,
+    pressure_afternoon INTEGER,
+    wind_max_speed NUMERIC,
+    wind_max_direction NUMERIC,
+    country TEXT,
+    country_code TEXT
 );
 
+-- Infection-related tables
+
 CREATE TABLE ILIARIRates (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -67,7 +84,7 @@ CREATE TABLE ILIARIRates (
 );
 
 CREATE TABLE SARIRates (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -77,7 +94,7 @@ CREATE TABLE SARIRates (
 );
 
 CREATE TABLE SARITestsDetectionPositivity (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -90,7 +107,7 @@ CREATE TABLE SARITestsDetectionPositivity (
 );
 
 CREATE TABLE activityFluTypeSubtype (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -103,7 +120,7 @@ CREATE TABLE activityFluTypeSubtype (
 );
 
 CREATE TABLE nonSentinelSeverity (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -115,7 +132,7 @@ CREATE TABLE nonSentinelSeverity (
 );
 
 CREATE TABLE nonSentinelTestsDetections (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -128,7 +145,7 @@ CREATE TABLE nonSentinelTestsDetections (
 );
 
 CREATE TABLE sentinelTestsDetectionsPositivity (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -141,7 +158,7 @@ CREATE TABLE sentinelTestsDetectionsPositivity (
 );
 
 CREATE TABLE sequencingVolumeDetectablePrevalence (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     survtype TEXT,
     datasource TEXT,
     countryname TEXT,
@@ -150,11 +167,11 @@ CREATE TABLE sequencingVolumeDetectablePrevalence (
     indicator TEXT,
     age TEXT,
     "value" NUMERIC,
-    detectableprevalence NUMERIC
+    detectableprevalence TEXT
 );
 
 CREATE TABLE variants (
-    "ID" SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
     survtype TEXT,
     datasource TEXT,
     countryname TEXT,
@@ -166,55 +183,84 @@ CREATE TABLE variants (
     "value" NUMERIC
 );
 
-
 -- Data Ingestion
-/*
-COPY airQuality (Samplingpoint, Pollutant, Start, End, Value, Unit, AggType, Validity, Verification, ResultTime, DataCapture, FkObservationLog)
-   FROM '/path/to/your/air_quality.csv'
-   DELIMITER ','
-   CSV HEADER;
 
-COPY ILIARIRates (survtype, countryname, yearweek, indicator, age, value)
-   FROM '/path/to/your/ILIARIRates.csv'
-   DELIMITER ','
-   CSV HEADER;
+-- TODO: FROM: add correct path
 
-COPY SARIRates (survtype, countryname, yearweek, indicator, age, value)
-   FROM '/path/to/your/SARIRates.csv'
-   DELIMITER ','
-   CSV HEADER;
+-- -- airQuality
+-- COPY airQuality ("Samplingpoint", "Pollutant", "Start", "End", "Value", "Unit", "AggType", "Validity", "Verification", "ResultTime", "DataCapture", "FkObservationLog", "fileName")
+--     FROM '/path/to/your/air_quality.csv'
+--     DELIMITER ','
+--     CSV HEADER;
 
-COPY SARITestsDetectionPositivity (survtype, countryname, yearweek, pathogen, pathogentype, pathogensubtype, indicator, age, value)
-   FROM '/path/to/your/SARITestsDetectionsPositivity.csv'
-   DELIMITER ','
-   CSV HEADER;
+-- -- airQualityDescriptors
+-- COPY airQualityDescriptors ("Label", "Definition", "Notation")
+--     FROM '/path/to/your/air_quality_descriptors.csv'
+--     DELIMITER ','
+--     CSV HEADER;
 
-COPY activityFluTypeSubtype (survtype, countryname, yearweek, pathogen, pathogentype, pathogensubtype, indicator, age, value)
-   FROM '/path/to/your/activityFluTypeSubtype.csv'
-   DELIMITER ','
-   CSV HEADER;
+-- -- country
+-- COPY country ("name", "lat", "lon", "country_code")
+--     FROM '/path/to/your/country.csv'
+--     DELIMITER ','
+--     CSV HEADER;
 
-COPY nonSentinelSeverity (survtype, countryname, yearweek, pathogen, pathogentype, indicator, age, value)
-   FROM '/path/to/your/nonSentinelSeverity.csv'
-   DELIMITER ','
-   CSV HEADER;
+-- -- weather
+-- COPY weather ("lat", "lon", "tz", "date", "units", "cloud_cover_afternoon", "humidity_afternoon", "precipitation_total", "temperature_min", "temperature_max", "temperature_afternoon", "temperature_night", "temperature_evening", "temperature_morning", "pressure_afternoon", "wind_max_speed", "wind_max_direction", "country", "country_code")
+--     FROM '/path/to/your/weather.csv'
+--     DELIMITER ','
+--     CSV HEADER;
 
-COPY nonSentinelTestsDetections (survtype, countryname, yearweek, pathogen, pathogentype, pathogensubtype, indicator, age, value)
-   FROM '/path/to/your/nonSentinelTestsDetections.csv'
-   DELIMITER ','
-   CSV HEADER;
+-- -- ILIARIRates
+-- COPY ILIARIRates ("survtype", "countryname", "yearweek", "indicator", "age", "value")
+--     FROM '/path/to/your/ILIARI_rates.csv'
+--     DELIMITER ','
+--     CSV HEADER;
 
-COPY sentinelTestsDetectionsPositivity (survtype, countryname, yearweek, pathogen, pathogentype, pathogensubtype, indicator, age, value)
-   FROM '/path/to/your/sentinelTestsDetectionsPositivity.csv'
-   DELIMITER ','
-   CSV HEADER;
+-- -- SARIRates
+-- COPY SARIRates ("survtype", "countryname", "yearweek", "indicator", "age", "value")
+--     FROM '/path/to/your/SARI_rates.csv'
+--     DELIMITER ','
+--     CSV HEADER;
 
-COPY sequencingVolumeDetectablePrevalence (survtype, datasource, countryname, yearweek, pathogen, indicator, age, value, detectableprevalence)
-   FROM '/path/to/your/sequencingVolumeDetectablePrevalence.csv'
-   DELIMITER ','
-   CSV HEADER;
+-- -- SARITestsDetectionPositivity
+-- COPY SARITestsDetectionPositivity ("survtype", "countryname", "yearweek", "pathogen", "pathogentype", "pathogensubtype", "indicator", "age", "value")
+--     FROM '/path/to/your/SARI_tests_detection_positivity.csv'
+--     DELIMITER ','
+--     CSV HEADER;
 
-COPY variants (survtype, datasource, countryname, yearweek, pathogen, variant, indicator, age, value)
-   FROM '/path/to/your/variants.csv'
-   DELIMITER ','
-   CSV HEADER;
+-- -- activityFluTypeSubtype
+-- COPY activityFluTypeSubtype ("survtype", "countryname", "yearweek", "pathogen", "pathogentype", "pathogensubtype", "indicator", "age", "value")
+--     FROM '/path/to/your/activity_flu_type_subtype.csv'
+--     DELIMITER ','
+--     CSV HEADER;
+
+-- -- nonSentinelSeverity
+-- COPY nonSentinelSeverity ("survtype", "countryname", "yearweek", "pathogen", "pathogentype", "indicator", "age", "value")
+--     FROM '/path/to/your/non_sentinel_severity.csv'
+--     DELIMITER ','
+--     CSV HEADER;
+
+-- -- nonSentinelTestsDetections
+-- COPY nonSentinelTestsDetections ("survtype", "countryname", "yearweek", "pathogen", "pathogentype", "pathogensubtype", "indicator", "age", "value")
+--     FROM '/path/to/your/non_sentinel_tests_detections.csv'
+--     DELIMITER ','
+--     CSV HEADER;
+
+-- -- sentinelTestsDetectionsPositivity
+-- COPY sentinelTestsDetectionsPositivity ("survtype", "countryname", "yearweek", "pathogen", "pathogentype", "pathogensubtype", "indicator", "age", "value")
+--     FROM '/path/to/your/sentinel_tests_detections_positivity.csv'
+--     DELIMITER ','
+--     CSV HEADER;
+
+-- -- sequencingVolumeDetectablePrevalence
+-- COPY sequencingVolumeDetectablePrevalence ("survtype", "datasource", "countryname", "yearweek", "pathogen", "indicator", "age", "value", "detectableprevalence")
+--     FROM '/path/to/your/sequencing_volume_detectable_prevalence.csv'
+--     DELIMITER ','
+--     CSV HEADER;
+
+-- -- variants
+-- COPY variants ("survtype", "datasource", "countryname", "yearweek", "pathogen", "variant", "indicator", "age", "value")
+--     FROM '/path/to/your/variants.csv'
+--     DELIMITER ','
+--     CSV HEADER;
