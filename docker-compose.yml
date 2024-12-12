@@ -85,6 +85,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_script:/docker-entrypoint-initdb.d  # Mount init_scripts directory to PostgreSQL's init directory
 
   oracle:
     image: oracleinanutshell/oracle-xe-11g

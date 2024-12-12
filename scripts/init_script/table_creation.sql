@@ -8,9 +8,9 @@
 CREATE TABLE airQuality (
     Samplingpoint TEXT,
     Pollutant TEXT,
-    Start TIMESTAMP,
-    End TIMESTAMP,
-    Value NUMERIC,
+    "Start" TIMESTAMP,
+    "End" TIMESTAMP,
+    "Value" NUMERIC,
     Unit TEXT,
     AggType TEXT,
     Validity TEXT,
@@ -23,31 +23,40 @@ CREATE TABLE airQuality (
 CREATE TABLE AirQualityDescriptors (
     URI TEXT,
     Label TEXT,
-    Definition TEXT,
+    "Definition" TEXT,
     Notation TEXT,
-    Status TEXT
+    "Status" TEXT
 );
 
 CREATE TABLE calendar (
-    -- Define columns if provided
+    "Year" INTEGER,
+    "Quarter" INTEGER,
+    "Month" INTEGER,
+    "Week" INTEGER,
+    "Day" INTEGER,  -- Fixed the typo here
+    Date_time TIMESTAMP
 );
 
 CREATE TABLE country (
-    -- Define columns if provided
+    "Name" TEXT,
+    Lat NUMERIC,
+    Lon NUMERIC,
+    Country_code TEXT
 );
 
 CREATE TABLE weather (
-    -- Define columns if provided
+    Temperature NUMERIC,  -- Example column, update as needed
+    Humidity NUMERIC,     -- Example column, update as needed
+    WindSpeed NUMERIC     -- Example column, update as needed
 );
 
--- Infections-related tables
 CREATE TABLE ILIARIRates (
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
     indicator TEXT,
     age TEXT,
-    value NUMERIC
+    "value" NUMERIC
 );
 
 CREATE TABLE SARIRates (
@@ -56,7 +65,7 @@ CREATE TABLE SARIRates (
     yearweek TEXT,
     indicator TEXT,
     age TEXT,
-    value NUMERIC
+    "value" NUMERIC
 );
 
 CREATE TABLE SARITestsDetectionPositivity (
@@ -68,7 +77,7 @@ CREATE TABLE SARITestsDetectionPositivity (
     pathogensubtype TEXT,
     indicator TEXT,
     age TEXT,
-    value NUMERIC
+    "value" NUMERIC
 );
 
 CREATE TABLE activityFluTypeSubtype (
@@ -80,7 +89,7 @@ CREATE TABLE activityFluTypeSubtype (
     pathogensubtype TEXT,
     indicator TEXT,
     age TEXT,
-    value NUMERIC
+    "value" NUMERIC
 );
 
 CREATE TABLE nonSentinelSeverity (
@@ -91,7 +100,7 @@ CREATE TABLE nonSentinelSeverity (
     pathogentype TEXT,
     indicator TEXT,
     age TEXT,
-    value NUMERIC
+    "value" NUMERIC
 );
 
 CREATE TABLE nonSentinelTestsDetections (
@@ -103,7 +112,7 @@ CREATE TABLE nonSentinelTestsDetections (
     pathogensubtype TEXT,
     indicator TEXT,
     age TEXT,
-    value NUMERIC
+    "value" NUMERIC
 );
 
 CREATE TABLE sentinelTestsDetectionsPositivity (
@@ -115,7 +124,7 @@ CREATE TABLE sentinelTestsDetectionsPositivity (
     pathogensubtype TEXT,
     indicator TEXT,
     age TEXT,
-    value NUMERIC
+    "value" NUMERIC
 );
 
 CREATE TABLE sequencingVolumeDetectablePrevalence (
@@ -126,7 +135,7 @@ CREATE TABLE sequencingVolumeDetectablePrevalence (
     pathogen TEXT,
     indicator TEXT,
     age TEXT,
-    value NUMERIC,
+    "value" NUMERIC,
     detectableprevalence NUMERIC
 );
 
@@ -139,11 +148,12 @@ CREATE TABLE variants (
     variant TEXT,
     indicator TEXT,
     age TEXT,
-    value NUMERIC
+    "value" NUMERIC
 );
 
--- Data Ingestion
 
+-- Data Ingestion
+/*
 COPY airQuality (Samplingpoint, Pollutant, Start, End, Value, Unit, AggType, Validity, Verification, ResultTime, DataCapture, FkObservationLog)
    FROM '/path/to/your/air_quality.csv'
    DELIMITER ','
