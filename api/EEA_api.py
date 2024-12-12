@@ -11,7 +11,7 @@ endpoint = "ParquetFile\\urls"
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Construct the download path relative to the script's directory
-download_path = os.path.join(script_dir, "EEA_Downloads")
+download_path = os.path.join(script_dir, "../raw_data/EEA_Downloads")
 
 csv_filename = "ParquetFileUrls.csv"
 parquet_download_path = os.path.join(download_path, "ParquetFiles")
@@ -23,7 +23,10 @@ os.makedirs(parquet_download_path, exist_ok=True)
 # Request body
 request_body = {
     "countries": [
-        "EE"
+        "HR",
+        "BE",
+        "AT",
+        "DE",
     ],
     "cities": [
     ],
