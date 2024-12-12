@@ -1,6 +1,6 @@
 import requests
-import mysql.connector
-from mysql.connector import Error
+import csv
+import os
 
 selected_countries = [
     "Austria",
@@ -34,7 +34,12 @@ selected_countries = [
     "Spain",
     "Sweden"
 ]
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
+# Construct the download path relative to the script's directory
+csv_path = os.path.join(script_dir, "../raw_data/geo_data")
+
+csv_filename = "geo_data.csv"
 
 def get_country_data(country_name):
     """
@@ -67,66 +72,44 @@ def get_country_data(country_name):
         print(f"Error fetching data for {country_name}: {e}")
         return None
 
-def save_country_data_to_db(country_data, connection):
+def save_country_data_to_csv(country_data_list, filename="geo_data.csv"):
     """
-    Saves country geo data to the MySQL database.
+    Saves country geo data to a CSV file.
     
     Args:
-        country_data (dict): Dictionary containing the country's geo data.
-        connection (mysql.connector.connection_cext.CMySQLConnection): MySQL database connection.
+        country_data_list (list of dicts): List containing country geo data.
+        filename (str): Name of the CSV file.
     """
     try:
-        if country_data:
-            cursor = connection.cursor()
-            query = """
-            INSERT INTO geo_data (name, lat, lon, country_code) 
-            VALUES (%s, %s, %s, %s)
-            """
-            cursor.execute(query, (country_data['name'], country_data['lat'], country_data['lon'], country_data['country_code']))
-            connection.commit()
-            print(f"Successfully saved data for {country_data['name']} to the database.")
-    except Error as e:
-        print(f"Failed to insert data for {country_data['name']}: {e}")
-
-def connect_to_db():
-    """
-    Connects to the MySQL database.
-    
-    Returns:
-        mysql.connector.connection_cext.CMySQLConnection: Database connection object.
-    """
-    try:
-        connection = mysql.connector.connect(
-            host='localhost',
-            database='your_database_name',
-            user='your_username',
-            password='your_password'
-        )
-        if connection.is_connected():
-            print("Connected to MySQL database")
-            return connection
-    except Error as e:
-        print(f"Error connecting to MySQL: {e}")
-        return None
+        with open(filename, mode='w', newline='') as file:
+            writer = csv.writer(file)
+            # Write the header
+            writer.writerow(["name", "lat", "lon", "country_code"])
+            
+            # Write each country's data
+            for country_data in country_data_list:
+                if country_data:  # Ensure country data is valid
+                    writer.writerow([
+                        country_data['name'], 
+                        country_data['lat'], 
+                        country_data['lon'], 
+                        country_data['country_code'].upper()
+                    ])
+        print(f"Successfully saved data to {filename}.")
+    except Exception as e:
+        print(f"Failed to save data to {filename}: {e}")
 
 def main(country_names):
-    '''
-    connection = connect_to_db()
-    if connection is None:
-        print("Unable to connect to the database. Exiting...")
-        return
-    '''
+    country_data_list = []
     for country_name in country_names:
         print(f"Processing {country_name}...")
         country_data = get_country_data(country_name)
         if country_data:
-            print(country_data)
-            #save_country_data_to_db(country_data, connection)
-    '''
-    if connection.is_connected():
-        connection.close()
-        print("MySQL connection closed.")
-        '''
+            #print(country_data)
+            country_data_list.append(country_data)
+    os.makedirs(csv_path, exist_ok=True)
+    csv_filepath = os.path.join(csv_path, csv_filename)
+    save_country_data_to_csv(country_data_list, csv_filepath)
 
 if __name__ == "__main__":
     main(selected_countries)

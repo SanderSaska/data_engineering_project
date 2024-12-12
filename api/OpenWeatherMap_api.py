@@ -23,30 +23,6 @@ OWM_api_params = {
     "dt": 1634054400  # 13th October 2021
 }
 OWM_geo_url = "http://api.openweathermap.org/geo/1.0/direct"
-OWM_geo_params = {
-    "q": "London",
-    "limit": 1,
-    "appid": OWM_api_K
-}
-
-def fetch_geo_data(city):
-    OWM_geo_params["q"] = city
-    try:
-        response = requests.get(OWM_geo_url, params=OWM_geo_params)
-        response.raise_for_status()  # Raise an error for HTTP issues
-
-        # Check if response contains a file
-        if "application/json" in response.headers.get("Content-Type", ""):
-            response_json = response.json()
-            return response_json[0]
-        else:
-            print("Unexpected response content type. Check API response.")
-            print("Response Headers:", response.headers)
-            print("Response Content:", response.text)  # Debugging unexpected responses
-
-    except requests.exceptions.RequestException as e:
-        print("Error occurred:", e)
-    
 
 
 def fetch_weather_data(geodata):
