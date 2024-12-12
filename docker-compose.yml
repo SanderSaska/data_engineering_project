@@ -15,6 +15,54 @@ services:
       - oracle
     volumes:
       - ./dags:/opt/airflow/dags
+    networks:
+      - airflow-net
+
+  airflow-webserver:
+    build: .
+    image: airflow-webserver
+    container_name: airflow-webserver
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres
+      - airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+    networks:
+      - airflow-net
+    command: ["airflow", "webserver"]
+
+  airflow-scheduler:
+    build: .
+    image: airflow-with-duckdb
+    container_name: airflow-scheduler
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+    volumes:
+      - ./dags:/opt/airflow/dags
+    depends_on:
+      - postgres
+      - airflow
+    networks:
+      - airflow-net
+    command: ["airflow", "scheduler"]
+
+  airflow-init:
+    build: .
+    image: airflow-init
+    container_name: airflow-init
+    command: ["airflow", "db", "init"]
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+    depends_on:
+      - postgres
+    networks:
+      - airflow-net
 
   dbt:
     build:
@@ -58,3 +106,7 @@ services:
 volumes:
   postgres_data:
   oracle_data:
+  
+networks:
+  airflow-net:
+    driver: bridge
