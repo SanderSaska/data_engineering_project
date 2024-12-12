@@ -8,10 +8,11 @@ services:
     container_name: airflow
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow_metadata
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-metadata/airflow_metadata
     ports:
       - "8080:8080"
     depends_on:
+      - airflow-metadata
       - postgres
       - oracle
     volumes:
@@ -24,12 +25,12 @@ services:
     image: airflow-webserver
     container_name: airflow-webserver
     environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow_metadata
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-metadata/airflow_metadata
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     ports:
       - "8081:8080"
     depends_on:
-      - postgres
+      - airflow-metadata
       - airflow
     volumes:
       - ./dags:/opt/airflow/dags
@@ -42,12 +43,12 @@ services:
     image: airflow-with-duckdb
     container_name: airflow-scheduler
     environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow_metadata
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-metadata/airflow_metadata
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     volumes:
       - ./dags:/opt/airflow/dags
     depends_on:
-      - postgres
+      - airflow-metadata
       - airflow
     networks:
       - airflow-net
@@ -59,9 +60,9 @@ services:
     container_name: airflow-init
     command: ["airflow", "db", "init"]
     environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow_metadata
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-metadata/airflow_metadata
     depends_on:
-      - postgres
+      - airflow-metadata
     networks:
       - airflow-net
 
@@ -75,20 +76,36 @@ services:
     depends_on:
       - postgres
 
+  # Airflow Metadata Database Service
+  airflow-metadata:
+    image: postgres:15
+    container_name: airflow_metadata_db
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow_metadata
+    ports:
+      - "5433:5432"  # Expose on a different port to avoid conflict
+    volumes:
+      - airflow_metadata_data:/var/lib/postgresql/data
+    networks:
+      - airflow-net
+
+  # Application Database Service
   postgres:
-  image: postgres:15
-  container_name: postgres
-  environment:
-    POSTGRES_USER: airflow
-    POSTGRES_PASSWORD: airflow
-    POSTGRES_DB: airflow_metadata  # Default database created initially
-  ports:
-    - "5432:5432"
-  volumes:
-    - postgres_data:/var/lib/postgresql/data
-    - ./scripts/init_script:/docker-entrypoint-initdb.d  # Mount init scripts directory
-  networks:
-    - airflow-net
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: raw_data
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_script:/docker-entrypoint-initdb.d
+    networks:
+      - airflow-net
 
   oracle:
     image: oracleinanutshell/oracle-xe-11g
@@ -114,6 +131,7 @@ services:
 volumes:
   postgres_data:
   oracle_data:
+  airflow_metadata_data:
 
 networks:
   airflow-net:
