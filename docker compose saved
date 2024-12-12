@@ -1,72 +1,149 @@
+version: "3.9"
+
+x-airflow-common: &airflow-common
+  image: apache/airflow:2.7.1
+  environment: &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    AIRFLOW__CORE__FERNET_KEY: ""
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__API__AUTH_BACKEND: "airflow.api.auth.backend.basic_auth"
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-duckdb pyarrow}
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/logs:/opt/airflow/logs
+    - ./airflow/plugins:/opt/airflow/plugins
+  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-0}"
+  depends_on:
+    redis:
+      condition: service_healthy
+    postgres:
+      condition: service_healthy
 
 services:
+  # PostgreSQL Service
   postgres:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: postgres_user
-      POSTGRES_PASSWORD: postgres_pass
-      POSTGRES_DB: postgres_db
+    image: postgres:13
     ports:
       - "5432:5432"
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    restart: always
 
-  oracle:
-    image: gvenzl/oracle-xe
-    environment:
-      ORACLE_PASSWORD: oracle_pass
+  # Redis Service
+  redis:
+    image: redis:latest
     ports:
-      - "1521:1521"
-      
-  mysql:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: mysql_pass
-      MYSQL_DATABASE: mysql_db
-    ports:
-      - "3306:3306"
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    restart: always
 
-
-  duckdb:
-    container_name: duckdb
-    build:
-      context: ./docker/duckdb  # Path to DuckDB Dockerfile
-    volumes:
-      - ./raw_data:/app/data  # Mount raw_data directory for persistent storage
-    stdin_open: true
-    tty: true
-    #networks:
-    #  - data_network
-
-  airflow:
-    build: ./airflow
-    environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres_user:postgres_pass@postgres/postgres_db
+  # Airflow Webserver
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
     ports:
       - "8080:8080"
-    volumes:
-      - ./airflow/dags:/opt/airflow/dags
-      - ./airflow/plugins:/opt/airflow/plugins
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
 
-  neo4j:
-    image: neo4j:5
-    environment:
-      NEO4J_AUTH: "neo4j/neo4j_pass"
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-    volumes:
-      - ./neo4j/import:/var/lib/neo4j/import
+  # Airflow Scheduler
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
 
-  iceberg:
-    image: apache/iceberg:latest
-    volumes:
-      - ./iceberg:/iceberg
+  # Airflow Worker
+  airflow-worker:
+    <<: *airflow-common
+    command: celery worker
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}"',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  # Airflow Initialization
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db init &&
+        airflow users create \
+          --username ${_AIRFLOW_WWW_USER_USERNAME:-airflow} \
+          --password ${_AIRFLOW_WWW_USER_PASSWORD:-airflow} \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@example.com
     environment:
-      ICEBERG_CATALOG_TYPE: hadoop
+      <<: *airflow-common-env
+      _AIRFLOW_DB_UPGRADE: "true"
+      _AIRFLOW_WWW_USER_CREATE: "true"
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+    volumes:
+      - ./airflow:/opt/airflow
+
+  # Flower Monitoring
+  flower:
+    <<: *airflow-common
+    command: celery flower
     ports:
-      - "9083:9083"
+      - "5555:5555"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:5555/"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  # DuckDB Service
+  duckdb:
+    container_name: duckdb
+    image: python:3.12-slim
+    environment:
+      _PIP_ADDITIONAL_REQUIREMENTS: "duckdb pyarrow"
+    volumes:
+      - ./raw_data:/app/data
+    stdin_open: true
+    tty: true
 
 volumes:
-  postgres_data:
+  postgres-db-volume:
