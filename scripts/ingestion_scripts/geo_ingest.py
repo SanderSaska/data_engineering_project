@@ -42,7 +42,7 @@ def insert_data_to_db(conn, df):
         # Create an insert query
         insert_query = sql.SQL('''
             INSERT INTO country (
-                "name", 
+                country_name, 
                 lat, 
                 lon, 
                 country_code
