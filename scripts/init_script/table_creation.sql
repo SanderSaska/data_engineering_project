@@ -6,9 +6,9 @@ CREATE TABLE airQuality (
     id SERIAL PRIMARY KEY,
     Samplingpoint TEXT,
     Pollutant INTEGER,
-    "Start" TIMESTAMP,
-    "End" TIMESTAMP,
-    "Value" DECIMAL(38, 18),
+    time_start TIMESTAMP not null,
+    time_end TIMESTAMP not null,
+    pollutant_value DECIMAL(38, 18),
     Unit TEXT,
     AggType TEXT,
     Validity INTEGER,
@@ -16,13 +16,13 @@ CREATE TABLE airQuality (
     ResultTime TIMESTAMP,
     DataCapture DECIMAL(38, 18),
     FkObservationLog TEXT,
-    "fileName" TEXT
+    file_Name TEXT
 );
 
 CREATE TABLE airQualityDescriptors (
     id INTEGER PRIMARY KEY,
     Label TEXT,
-    "Definition" TEXT,
+    label_definition TEXT,
     Notation TEXT
 );
 
@@ -30,46 +30,26 @@ CREATE TABLE airQualityDescriptors (
 
 CREATE TABLE calendar (
     id SERIAL PRIMARY KEY,
-    "Year" INTEGER,
-    "Quarter" INTEGER,
-    "Month" INTEGER,
-    "Week" INTEGER,
-    "Day" INTEGER,
-    Date_time TIMESTAMP
+    calendar_year INTEGER,
+    calendar_quarter INTEGER,
+    calendar_month INTEGER,
+    calendar_week INTEGER,
+    calendar_day INTEGER,
+    date_time TIMESTAMP
 );
 
 -- Weather-related tables
 
 CREATE TABLE country (
     id SERIAL PRIMARY KEY,
-    "name" TEXT,
-    lat NUMERIC,
-    lon NUMERIC,
-    country_code TEXT
+    "name" TEXT NOT NULL,
+    lat NUMERIC NOT NULL CHECK (lat >= -90 AND lat <= 90),
+    lon NUMERIC NOT NULL CHECK (lon >= -180 AND lon <= 180),
+    country_code TEXT NOT NULL UNIQUE
 );
 
-CREATE TABLE weather (
-    id SERIAL PRIMARY KEY,
-    lat NUMERIC,
-    lon NUMERIC,
-    tz TEXT,
-    "date" TEXT,
-    units TEXT,
-    cloud_cover_afternoon  INTEGER,
-    humidity_afternoon INTEGER,
-    precipitation_total INTEGER,
-    temperature_min NUMERIC,
-    temperature_max NUMERIC,
-    temperature_afternoon NUMERIC,
-    temperature_night NUMERIC,
-    temperature_evening NUMERIC,
-    temperature_morning NUMERIC,
-    pressure_afternoon INTEGER,
-    wind_max_speed NUMERIC,
-    wind_max_direction NUMERIC,
-    country TEXT,
-    country_code TEXT
-);
+-- muutub
+
 
 -- Infection-related tables
 
@@ -78,9 +58,9 @@ CREATE TABLE ILIARIRates (
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
-    indicator TEXT,
+    inf_indicator TEXT,
     age TEXT,
-    "value" NUMERIC
+    inf_value NUMERIC
 );
 
 CREATE TABLE SARIRates (
@@ -88,9 +68,9 @@ CREATE TABLE SARIRates (
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
-    indicator TEXT,
+    inf_indicator TEXT,
     age TEXT,
-    "value" NUMERIC
+    inf_value NUMERIC
 );
 
 CREATE TABLE SARITestsDetectionPositivity (
@@ -101,9 +81,9 @@ CREATE TABLE SARITestsDetectionPositivity (
     pathogen TEXT,
     pathogentype TEXT,
     pathogensubtype TEXT,
-    indicator TEXT,
+    inf_indicator TEXT,
     age TEXT,
-    "value" NUMERIC
+    inf_value NUMERIC
 );
 
 CREATE TABLE activityFluTypeSubtype (
@@ -114,9 +94,9 @@ CREATE TABLE activityFluTypeSubtype (
     pathogen TEXT,
     pathogentype TEXT,
     pathogensubtype TEXT,
-    indicator TEXT,
+    inf_indicator TEXT,
     age TEXT,
-    "value" NUMERIC
+    inf_value NUMERIC
 );
 
 CREATE TABLE nonSentinelSeverity (
@@ -126,9 +106,9 @@ CREATE TABLE nonSentinelSeverity (
     yearweek TEXT,
     pathogen TEXT,
     pathogentype TEXT,
-    indicator TEXT,
+    inf_indicator TEXT,
     age TEXT,
-    "value" NUMERIC
+    inf_value NUMERIC
 );
 
 CREATE TABLE nonSentinelTestsDetections (
@@ -139,9 +119,9 @@ CREATE TABLE nonSentinelTestsDetections (
     pathogen TEXT,
     pathogentype TEXT,
     pathogensubtype TEXT,
-    indicator TEXT,
+    inf_indicator TEXT,
     age TEXT,
-    "value" NUMERIC
+    inf_value NUMERIC
 );
 
 CREATE TABLE sentinelTestsDetectionsPositivity (
@@ -152,9 +132,9 @@ CREATE TABLE sentinelTestsDetectionsPositivity (
     pathogen TEXT,
     pathogentype TEXT,
     pathogensubtype TEXT,
-    indicator TEXT,
+    inf_indicator TEXT,
     age TEXT,
-    "value" NUMERIC
+    inf_value NUMERIC
 );
 
 CREATE TABLE sequencingVolumeDetectablePrevalence (
@@ -164,9 +144,9 @@ CREATE TABLE sequencingVolumeDetectablePrevalence (
     countryname TEXT,
     yearweek TEXT,
     pathogen TEXT,
-    indicator TEXT,
+    inf_indicator TEXT,
     age TEXT,
-    "value" NUMERIC,
+    inf_value NUMERIC,
     detectableprevalence TEXT
 );
 
@@ -178,9 +158,9 @@ CREATE TABLE variants (
     yearweek TEXT,
     pathogen TEXT,
     variant TEXT,
-    indicator TEXT,
+    inf_indicator TEXT,
     age TEXT,
-    "value" NUMERIC
+    inf_value NUMERIC
 );
 
 -- Data Ingestion
