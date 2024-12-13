@@ -29,7 +29,7 @@ CREATE TABLE airQualityDescriptors (
 -- Calendar
 
 CREATE TABLE calendar (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     "Year" INTEGER,
     "Quarter" INTEGER,
     "Month" INTEGER,
@@ -41,7 +41,7 @@ CREATE TABLE calendar (
 -- Weather-related tables
 
 CREATE TABLE country (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     "name" TEXT,
     lat NUMERIC,
     lon NUMERIC,
@@ -49,7 +49,7 @@ CREATE TABLE country (
 );
 
 CREATE TABLE weather (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     lat NUMERIC,
     lon NUMERIC,
     tz TEXT,
@@ -74,7 +74,7 @@ CREATE TABLE weather (
 -- Infection-related tables
 
 CREATE TABLE ILIARIRates (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -84,7 +84,7 @@ CREATE TABLE ILIARIRates (
 );
 
 CREATE TABLE SARIRates (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -94,7 +94,7 @@ CREATE TABLE SARIRates (
 );
 
 CREATE TABLE SARITestsDetectionPositivity (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -107,7 +107,7 @@ CREATE TABLE SARITestsDetectionPositivity (
 );
 
 CREATE TABLE activityFluTypeSubtype (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -120,7 +120,7 @@ CREATE TABLE activityFluTypeSubtype (
 );
 
 CREATE TABLE nonSentinelSeverity (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -132,7 +132,7 @@ CREATE TABLE nonSentinelSeverity (
 );
 
 CREATE TABLE nonSentinelTestsDetections (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -145,7 +145,7 @@ CREATE TABLE nonSentinelTestsDetections (
 );
 
 CREATE TABLE sentinelTestsDetectionsPositivity (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     survtype TEXT,
     countryname TEXT,
     yearweek TEXT,
@@ -158,7 +158,7 @@ CREATE TABLE sentinelTestsDetectionsPositivity (
 );
 
 CREATE TABLE sequencingVolumeDetectablePrevalence (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     survtype TEXT,
     datasource TEXT,
     countryname TEXT,
@@ -171,7 +171,7 @@ CREATE TABLE sequencingVolumeDetectablePrevalence (
 );
 
 CREATE TABLE variants (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     survtype TEXT,
     datasource TEXT,
     countryname TEXT,
@@ -184,8 +184,6 @@ CREATE TABLE variants (
 );
 
 -- Data Ingestion
-
--- TODO: FROM: add correct path
 
 -- -- airQuality
 -- COPY airQuality ("Samplingpoint", "Pollutant", "Start", "End", "Value", "Unit", "AggType", "Validity", "Verification", "ResultTime", "DataCapture", "FkObservationLog", "fileName")
