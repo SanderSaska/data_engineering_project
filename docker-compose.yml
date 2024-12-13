@@ -128,10 +128,29 @@ services:
     networks:
       - airflow-net
 
+  neo4j:
+    image: neo4j:5
+    container_name: neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/neo4jpassword  # Replace "neo4jpassword" with your desired password
+    ports:
+      - "7474:7474"  # Neo4j Web UI
+      - "7687:7687"  # Bolt Protocol (for database connections)
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_import:/var/lib/neo4j/import
+    networks:
+      - airflow-net
+
+
 volumes:
   postgres_data:
   oracle_data:
   airflow_metadata_data:
+  neo4j_data:
+  neo4j_logs:
+  neo4j_import:
 
 networks:
   airflow-net:
