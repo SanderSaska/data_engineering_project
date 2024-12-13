@@ -42,14 +42,29 @@ CREATE TABLE calendar (
 
 CREATE TABLE country (
     id SERIAL PRIMARY KEY,
-    "name" TEXT NOT NULL,
+    country_name TEXT NOT NULL,
     lat NUMERIC NOT NULL CHECK (lat >= -90 AND lat <= 90),
     lon NUMERIC NOT NULL CHECK (lon >= -180 AND lon <= 180),
     country_code TEXT NOT NULL UNIQUE
 );
 
--- muutub
-
+-- uus weather
+CREATE TABLE weather (
+    id SERIAL PRIMARY KEY,
+    country_name TEXT NOT NULL,
+    weather_date TIMESTAMP NOT NULL,
+    weather_code TEXT,
+    temperature_2m_max NUMERIC(5, 2), -- Maximum temperature at 2 meters (e.g., -99.99 to 99.99)
+    temperature_2m_min NUMERIC(5, 2), -- Minimum temperature at 2 meters (e.g., -99.99 to 99.99)
+    apparent_temperature_max NUMERIC(5, 2), -- Maximum apparent temperature (e.g., -99.99 to 99.99)
+    apparent_temperature_min NUMERIC(5, 2), -- Minimum apparent temperature (e.g., -99.99 to 99.99)
+    precipitation_sum NUMERIC(8, 3), -- Total precipitation in mm (e.g., up to 99999.999 mm)
+    rain_sum NUMERIC(8, 3), -- Total rain in mm
+    showers_sum NUMERIC(8, 3), -- Total showers in mm
+    snowfall_sum NUMERIC(8, 3), -- Total snowfall in mm
+    wind_speed_10m_max NUMERIC(5, 2), -- Maximum wind speed at 10 meters in m/s
+    wind_gusts_10m_max NUMERIC(5, 2) -- Maximum wind gusts at 10 meters in m/s
+);
 
 -- Infection-related tables
 
@@ -183,8 +198,11 @@ CREATE TABLE variants (
 --     DELIMITER ','
 --     CSV HEADER;
 
--- -- weather
--- COPY weather ("lat", "lon", "tz", "date", "units", "cloud_cover_afternoon", "humidity_afternoon", "precipitation_total", "temperature_min", "temperature_max", "temperature_afternoon", "temperature_night", "temperature_evening", "temperature_morning", "pressure_afternoon", "wind_max_speed", "wind_max_direction", "country", "country_code")
+-- -- weather 
+-- COPY weather ("country_name", "weather_date", "weather_code", "temperature_2m_max", "temperature_2m_min", 
+--                   "apparent_temperature_max", "apparent_temperature_min", 
+--                   "precipitation_sum", "rain_sum", "showers_sum", "snowfall_sum", 
+--                   "wind_speed_10m_max", "wind_gusts_10m_max")
 --     FROM '/path/to/your/weather.csv'
 --     DELIMITER ','
 --     CSV HEADER;
