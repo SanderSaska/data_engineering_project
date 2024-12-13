@@ -67,14 +67,22 @@ services:
       - airflow-net
 
   dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.8.2
+    container_name: dbt
     build:
       context: ./docker
       dockerfile: Dockerfile-dbt
-    container_name: data_engineering_project_dbt
-    volumes:
-      - ./dbt:/dbt
+    entrypoint: bash
+    tty: true
     depends_on:
       - postgres
+    ports:
+      - 8060:8060
+    volumes:
+      - ./dbt/project:/usr/app
+      - ./dbt/.dbt:/root/.dbt
+    networks:
+      - airflow-net
 
   # Airflow Metadata Database Service
   airflow-metadata:
@@ -107,9 +115,23 @@ services:
     networks:
       - airflow-net
 
+  # IDE for accessing Postgres
+  pgadmin:
+    container_name: pgadmin
+    image: elestio/pgadmin:REL-8_10
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+      - ./data/pgadmin_data:/var/lib/pgadmin
+    ports:
+      - 5050:80
+    networks:
+      - airflow-net
+
   oracle:
     image: oracleinanutshell/oracle-xe-11g
-    container_name: data_engineering_project_oracle
+    container_name: oracle
     environment:
       ORACLE_PASSWORD: oracle
     ports:
