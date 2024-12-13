@@ -3,7 +3,7 @@
 -- Air quality tables
 
 CREATE TABLE airQuality (
-    id INTEGER PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     Samplingpoint TEXT,
     Pollutant INTEGER,
     "Start" TIMESTAMP,
