@@ -88,7 +88,7 @@ def process_csv_files():
                 
                 # Ensure DataFrame has the same column names as the table
                 df.rename(columns=lambda x: x.strip().lower(), inplace=True) # Normalize column names
-                
+                df.rename(columns={'indicator': 'inf_indicator', 'value': 'inf_value'}, inplace=True)
                 # Insert the DataFrame into the database
                 insert_data_to_db(conn, df, table_name)
             except Exception as e:

@@ -43,9 +43,9 @@ def insert_data_to_db(conn, df, file_name):
             INSERT INTO airQuality (
                 Samplingpoint,
                 Pollutant,
-                "Start",
-                "End",
-                "Value",
+                time_start,
+                time_end,
+                pollutant_value,
                 Unit,
                 AggType,
                 Validity,
@@ -53,7 +53,7 @@ def insert_data_to_db(conn, df, file_name):
                 ResultTime,
                 DataCapture,
                 FkObservationLog,
-                "fileName"
+                file_Name
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ''')
         
