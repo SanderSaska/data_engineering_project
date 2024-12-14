@@ -33,6 +33,8 @@ services:
       - "8080:8080"  # Standard Airflow port
     depends_on:
       - airflow-metadata
+    env_file:
+      - ./airflow/.env
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./api:/opt/airflow/api
@@ -53,6 +55,8 @@ services:
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./api:/opt/airflow/api
+    env_file:
+      - ./airflow/.env
     depends_on:
       - airflow-metadata
     networks:
@@ -63,6 +67,8 @@ services:
     build: .
     image: airflow-init
     container_name: airflow-init
+    env_file:
+      - ./airflow/.env
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-metadata/airflow_metadata
     depends_on:
