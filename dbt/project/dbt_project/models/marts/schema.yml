@@ -16,7 +16,7 @@ models:
         description: "Aggregation type of the air quality data."
     post-hook:
       # Add primary key on air_quality_id
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT pk_{{ this.name }}_air_quality_id PRIMARY KEY (air_quality_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.dim_airQuality ADD CONSTRAINT pk_dim_airQuality_air_quality_id PRIMARY KEY (air_quality_id)"
 
   - name: dim_calendar
     description: "Dimension table for calendar information."
@@ -39,7 +39,7 @@ models:
         description: "Combination of year and week for time tracking."
     post-hook:
       # Add primary key on calendar_id
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT pk_{{ this.name }}_calendar_id PRIMARY KEY (calendar_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.dim_calendar ADD CONSTRAINT pk_dim_calendar_calendar_id PRIMARY KEY (calendar_id)"
 
   - name: dim_country
     description: "Dimension table for country information."
@@ -56,7 +56,7 @@ models:
         description: "Country code as a two-character ISO code."
     post-hook:
       # Add primary key on country_id
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT pk_{{ this.name }}_country_id PRIMARY KEY (country_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.dim_country ADD CONSTRAINT pk_dim_country_country_id PRIMARY KEY (country_id)"
 
   - name: dim_infections
     description: "Dimension table for infections data."
@@ -77,7 +77,7 @@ models:
         description: "Indicator value for the infection."
     post-hook:
       # Add primary key on infection_id
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT pk_{{ this.name }}_infection_id PRIMARY KEY (infection_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.dim_infections ADD CONSTRAINT pk_dim_infections_infection_id PRIMARY KEY (infection_id)"
 
   - name: dim_weather
     description: "Dimension table for weather information."
@@ -88,7 +88,7 @@ models:
         description: "Code representing weather conditions."
     post-hook:
       # Add primary key on weather_id
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT pk_{{ this.name }}_weather_id PRIMARY KEY (weather_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.dim_weather ADD CONSTRAINT pk_dim_weather_weather_id PRIMARY KEY (weather_id)"
 
   - name: f_data
     description: "Fact table combining data from calendar, weather, air quality, infections, and country dimensions."
@@ -129,8 +129,8 @@ models:
         description: "Maximum wind gusts at 10 meters."
     post-hook:
       # Foreign key constraints for the fact table
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT fk_{{ this.name }}_calendar FOREIGN KEY (calendar_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_calendar(calendar_id)"
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT fk_{{ this.name }}_weather FOREIGN KEY (weather_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_weather(weather_id)"
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT fk_{{ this.name }}_country FOREIGN KEY (country_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_country(country_id)"
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT fk_{{ this.name }}_air_quality FOREIGN KEY (air_quality_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_air_quality(air_quality_id)"
-      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.{{ this.name }} ADD CONSTRAINT fk_{{ this.name }}_infection FOREIGN KEY (infection_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_infections(infection_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.f_data ADD CONSTRAINT fk_f_data_calendar FOREIGN KEY (calendar_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_calendar(calendar_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.f_data ADD CONSTRAINT fk_f_data_weather FOREIGN KEY (weather_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_weather(weather_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.f_data ADD CONSTRAINT fk_f_data_country FOREIGN KEY (country_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_country(country_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.f_data ADD CONSTRAINT fk_f_data_air_quality FOREIGN KEY (air_quality_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_airQuality(air_quality_id)"
+      - "ALTER TABLE {{ target.database }}.{{ target.schema }}.f_data ADD CONSTRAINT fk_f_data_infection FOREIGN KEY (infection_id) REFERENCES {{ target.database }}.{{ target.schema }}.dim_infections(infection_id)"
