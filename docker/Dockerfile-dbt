@@ -1,7 +1,7 @@
 FROM python:3.9-slim
 
 # Install dbt and necessary adapters
-RUN pip install --no-cache-dir dbt-postgres dbt-oracle dbt-core duckdb
+RUN pip install --no-cache-dir dbt-postgres dbt-oracle dbt-core dbt-duckdb
 
 # Create a working directory
 WORKDIR /usr/app
