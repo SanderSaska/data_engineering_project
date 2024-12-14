@@ -1,0 +1,31 @@
+name: dbt_project
+version: 1.0
+config-version: 2
+profile: dbt_project
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+seed-paths: ["seeds"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+# Model configurations
+models:
+  dbt_project:
+    raw:
+      +materialized: view
+      +schema: public
+      +database: raw_data
+      +target: postgres  # Raw models use Postgres
+
+    staging:
+      +materialized: table
+      +schema: staging
+      +database: raw_data
+      +target: duckdb  # Staging models use DuckDB
+
+    marts:
+      +materialized: table
+      +schema: marts
+      +database: raw_data
+      +target: duckdb  # Marts models use DuckDB

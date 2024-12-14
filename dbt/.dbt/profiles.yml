@@ -1,0 +1,26 @@
+dbt_project:
+  outputs:
+    raw:
+      type: postgres
+      threads: 1
+      host: postgres
+      user: airflow
+      pass: airflow
+      port: 5432
+      dbname: raw_data
+      schema: public
+    staging:
+      type: duckdb
+      threads: 1
+      dbname: analytics
+      schema: staging
+      host: duckdb
+      port: 5433
+    marts:
+      type: duckdb
+      threads: 1
+      dbname: analytics
+      schema: marts
+      host: duckdb
+      port: 5433
+  target: raw
