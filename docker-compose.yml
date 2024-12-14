@@ -16,6 +16,7 @@ services:
       - oracle
     volumes:
       - ./airflow/dags:/opt/airflow/dags
+      - ./api:/opt/airflow/api
     networks:
       - airflow-net
 
@@ -33,8 +34,11 @@ services:
       - airflow-metadata
     volumes:
       - ./airflow/dags:/opt/airflow/dags
+      - ./api:/opt/airflow/api
+      - ./docker/airflow_entrypoint.sh:/opt/airflow/airflow_entrypoint.sh
     networks:
       - airflow-net
+    entrypoint: /opt/airflow/airflow_entrypoint.sh
     command: ["airflow", "webserver"]
 
 
@@ -47,6 +51,7 @@ services:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
     volumes:
       - ./airflow/dags:/opt/airflow/dags
+      - ./api:/opt/airflow/api
     depends_on:
       - airflow-metadata
       - airflow
@@ -58,27 +63,12 @@ services:
     build: .
     image: airflow-init
     container_name: airflow-init
-    command:
-      - /bin/sh
-      - -c
-      - |
-        airflow db init &&
-        airflow users create \
-          --username airflow \
-          --firstname Airflow \
-          --lastname User \
-          --role Admin \
-          --email airflow@example.com \
-          --password airflow
     environment:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-metadata/airflow_metadata
     depends_on:
       - airflow-metadata
     networks:
       - airflow-net
-
-
-
 
   # Airflow Metadata Database Service
   airflow-metadata:
