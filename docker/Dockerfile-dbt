@@ -3,6 +3,10 @@ FROM python:3.9-slim
 # Install dbt and necessary adapters
 RUN pip install --no-cache-dir dbt-postgres dbt-oracle dbt-core dbt-duckdb
 
+# Install Git for dbt dependencies
+RUN apt-get update -y && \
+    apt-get install -y wget git unzip
+
 # Create a working directory
 WORKDIR /usr/app
 
