@@ -20,6 +20,8 @@ parquet_download_path = os.path.join(download_path, "ParquetFiles")
 os.makedirs(download_path, exist_ok=True)
 os.makedirs(parquet_download_path, exist_ok=True)
 
+geo_data_file = os.path.join(script_dir, "../raw_data/geo_data/geo_data.csv")
+
 # Request body
 request_body = {
     "countries": [
@@ -38,11 +40,24 @@ request_body = {
     ],
     "dataset": 2,
     "source": "API",
-    "dateTimeStart": "2023-01-01T00:00:00Z",
-    "dateTimeEnd": "2023-12-31T00:00:00Z",
+    "dateTimeStart": "2020-06-01T00:00:00Z",
+    "dateTimeEnd": "2024-12-31T00:00:00Z",
     "aggregationType": "day",
     "email": ""
 }
+
+def get_country_codes():
+    """Load geo data from the CSV file."""
+    country_codes = []
+    try:
+        with open(geo_data_file, mode='r') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                country_codes.append(row['country_code'])
+        print("Successfully loaded country codes from", geo_data_file)
+    except Exception as e:
+        print("Error loading country codes from CSV:", e)
+    return country_codes
 
 def fetch_air_quality_data():
     try:
@@ -100,6 +115,11 @@ def process_csv_and_download():
     except Exception as e:
         print(f"Error processing CSV: {e}")
 
-if __name__ == "__main__":
+def main():
+    codes = get_country_codes()
+    request_body['countries'] = codes
     fetch_air_quality_data()
     process_csv_and_download()
+
+if __name__ == "__main__":
+    main()
