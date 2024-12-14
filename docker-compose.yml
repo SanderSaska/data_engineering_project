@@ -217,6 +217,24 @@ services:
       - airflow-net
 
 
+  sl:
+    container_name: sl
+    build:
+      context: ./docker  # Correct folder containing your Dockerfile
+      dockerfile: Dockerfile-streamlit
+    volumes:
+      - ./streamlit_app:/app  # Ensure this matches the folder containing `app.py`
+    ports:
+      - "8501:8501"  # Default Streamlit port
+      - "8502:8502"  # Alternative port for additional instances (if needed)
+    networks:
+      - airflow-net
+
+        
+
+
+
+
 volumes:
   postgres_data:
   oracle_data:
