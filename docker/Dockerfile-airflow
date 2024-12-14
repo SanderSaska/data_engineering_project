@@ -1,5 +1,5 @@
 FROM apache/airflow:2.6.3
 
-RUN pip install --no-cache-dir duckdb dbt-core neo4j
+RUN pip install --no-cache-dir duckdb dbt-core neo4j py2neo
 WORKDIR /opt/airflow
 ENTRYPOINT ["airflow", "db", "init"]
