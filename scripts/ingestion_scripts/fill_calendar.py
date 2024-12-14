@@ -2,9 +2,8 @@ import argparse
 import psycopg2
 from datetime import datetime, timedelta
 
-# Default start and end dates
-DEFAULT_START_DATE = datetime(2013, 1, 1)
-DEFAULT_END_DATE = datetime.now()
+# Default start and end dates (now dynamic)
+DEFAULT_START_DATE = '2013-01-01'
 
 # Database connection parameters
 db_config = {
@@ -80,7 +79,7 @@ def main(start_date, end_date):
         print(f"Inserting {len(calendar_entries)} entries into the database...")
         insert_calendar_entries(conn, calendar_entries)
         
-        print("Calendar successfully filled.")
+        print(f"Calendar successfully filled from {start_date} to {end_date}.")
     except Exception as e:
         print(f"Error occurred: {e}")
     finally:
@@ -92,13 +91,13 @@ if __name__ == "__main__":
     parser.add_argument(
         '--start_date', 
         type=lambda s: datetime.strptime(s, '%Y-%m-%d'), 
-        default=DEFAULT_START_DATE, 
+        default=datetime.strptime(DEFAULT_START_DATE, '%Y-%m-%d'), 
         help="Start date in YYYY-MM-DD format (default: 2013-01-01)"
     )
     parser.add_argument(
         '--end_date', 
         type=lambda s: datetime.strptime(s, '%Y-%m-%d'), 
-        default=DEFAULT_END_DATE, 
+        default=datetime.now(),  # Use dynamic default end date
         help="End date in YYYY-MM-DD format (default: today's date)"
     )
     

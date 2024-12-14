@@ -3,6 +3,7 @@ import glob
 import pandas as pd
 import psycopg2
 from psycopg2.extras import execute_values
+import argparse
 
 # Database configuration
 db_config = {
@@ -23,12 +24,12 @@ table_name = 'weather'
 def get_country_name_from_filename(filename):
     """
     Extracts the country name from the file name.
-    Assumes the file name is in the format {country_name}_weather.csv.
+    Assumes the file name is in the format {country_name}_weather_{START_DATE}_{END_DATE}.csv.
     """
     base_name = os.path.basename(filename)
-    country_name = base_name.replace('_weather.csv', '')
+    # Remove the suffix '_weather_{START_DATE}_{END_DATE}.csv' to get the country name
+    country_name = base_name.split('_weather_')[0]
     return country_name.capitalize()  # Capitalize to make it look cleaner
-
 
 def read_weather_csv(file_path):
     """
@@ -101,7 +102,7 @@ def insert_data_to_db(df, conn):
         print(f"Inserted {len(data_tuples)} rows into {table_name}.")
 
 
-def main():
+def main(csv_files):
     """
     Main function to ingest all weather CSV files into the database.
     """
@@ -111,7 +112,6 @@ def main():
         print("Connected to the database successfully.")
         
         # Get all CSV files from the specified directory
-        csv_files = glob.glob(os.path.join(csv_dir, "*_weather.csv"))
         print(f"Found {len(csv_files)} files to ingest.")
         
         for file_path in csv_files:
@@ -139,4 +139,19 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # Argument parser to accept optional files parameter
+    parser = argparse.ArgumentParser(description="Ingest weather data files into the database.")
+    parser.add_argument(
+        '--files', 
+        nargs='*',  # Accept zero or more file paths as a list
+        default=glob.glob(os.path.join(csv_dir, "*_weather_*_*.csv")),  # Default glob logic
+        help="List of weather CSV files to ingest. Defaults to all files matching *_weather_*_*.csv."
+    )
+    
+    args = parser.parse_args()
+    csv_files = args.files
+    
+    # Print the files that are being processed for debug purposes
+    print(f"Files to process: {csv_files}")
+    
+    main(csv_files)
