@@ -8,4 +8,4 @@ SELECT
     lat,
     lon,
     country_code
-FROM staging_data;
+FROM staging_data

@@ -1,18 +1,29 @@
+version: 2
+
 sources:
-  - name: postgres
-    database: raw_data
-    schema: public
+  - name: raw_data
+    database: raw_data  # Specify the database where raw_data is located
+    schema: public      # Specify the schema where raw_data is located (update if necessary)
     tables:
-      - name: airQuality
       - name: calendar
+        description: "Raw calendar data."
       - name: country
-      - name: activityflutypesubtype
-      - name: iliarirates
-      - name: nonsentinelseverity
-      - name: nonsentineltestsdetections
-      - name: sarirates
-      - name: saritestsdetectionpositivity
-      - name: sentineltestsdetectionspositivity
+        description: "Raw country data."
+      - name: airquality
+        description: "Raw air quality data."
       - name: weather
-      #- name: 
-      #- name: 
+        description: "Raw weather data."
+      - name: activityflutypesubtype
+        description: "Raw activity flu type and subtype data."
+      - name: iliarirates
+        description: "Raw ILIARI rates data."
+      - name: nonsentinelseverity
+        description: "Raw non-sentinel severity data."
+      - name: nonsentineltestsdetections
+        description: "Raw non-sentinel tests detections."
+      - name: sarirates
+        description: "Raw SARI rates data."
+      - name: saritestsdetectionpositivity
+        description: "Raw SARI tests detection positivity data."
+      - name: sentineltestsdetectionspositivity
+        description: "Raw sentinel tests detections positivity data."

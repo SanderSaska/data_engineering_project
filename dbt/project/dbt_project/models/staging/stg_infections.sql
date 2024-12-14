@@ -20,12 +20,12 @@ WITH raw_infections AS (
     from {{ source('raw_data', 'saritestsdetectionpositivity') }}
     Union
     Select id, 'sentinelTestsDetectionsPositivity' as inf_source, countryname, yearweek, pathogen, pathogentype, pathogensubtype, age, inf_indicator, inf_value
-    from {{ source('raw_data', 'sentineltestsdetectionspositivity') }})
+    from {{ source('raw_data', 'sentineltestsdetectionspositivity') }}) temp
 
 
 )
 SELECT
-    concat(id, source) as infection_id,
+    concat(id, inf_source) as infection_id,
     inf_source,
     countryname,
     yearweek,

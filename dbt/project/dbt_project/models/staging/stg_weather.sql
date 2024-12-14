@@ -32,4 +32,4 @@ SELECT
     snowfall_sum,
     wind_speed_10m_max,
     wind_gusts_10m_max
-FROM raw_weather_data;
+FROM raw_weather_data
