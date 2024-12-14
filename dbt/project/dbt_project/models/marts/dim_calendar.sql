@@ -11,4 +11,4 @@ SELECT
     calendar_day,
     date_time,
     calendar_year_week
-FROM staging_data;
+FROM staging_data

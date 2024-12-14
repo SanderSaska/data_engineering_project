@@ -6,4 +6,4 @@ WITH stg_weather_clean AS (
 SELECT
     id AS weather_id,  -- Create a unique identifier for this dimension
     weather_code
-FROM stg_weather_clean;
+FROM stg_weather_clean

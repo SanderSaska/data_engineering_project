@@ -10,4 +10,4 @@ SELECT
     pathogensubtype,
     age,
     inf_indicator
-FROM staging_data;
+FROM staging_data

@@ -78,7 +78,7 @@ services:
     ports:
       - 8060:8060
     volumes:
-      - ./dbt/project:/usr/app
+      - ./dbt/project/dbt_project:/usr/app
       - ./dbt/.dbt:/root/.dbt
     networks:
       - airflow-net

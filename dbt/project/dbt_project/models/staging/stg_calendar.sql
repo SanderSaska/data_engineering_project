@@ -13,4 +13,4 @@ SELECT
     date_time,
     calendar_year_week
 FROM raw_calendar
-WHERE date_time IS NOT NULL;  -- Filter out any null values
+WHERE date_time IS NOT NULL

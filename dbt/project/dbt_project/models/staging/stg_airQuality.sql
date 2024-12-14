@@ -1,7 +1,7 @@
 -- models/staging/stg_air_quality.sql
 WITH raw_air_quality AS (
     SELECT *
-    FROM {{ source('raw_data', 'airQuality') }}
+    FROM {{ source('raw_data', 'airquality') }}
 )
 SELECT
     id,
@@ -19,4 +19,4 @@ SELECT
     FkObservationLog,
     file_Name
 FROM raw_air_quality
-WHERE pollutant_value IS NOT NULL;  -- Filter out records with missing pollutant values
+WHERE pollutant_value IS NOT NULL
