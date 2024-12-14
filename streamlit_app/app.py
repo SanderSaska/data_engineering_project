@@ -5,7 +5,7 @@ import altair as alt
 import requests
 
 # DuckDB Database Path
-DUCKDB_PATH = "/app/data/my_database.duckdb"
+DUCKDB_PATH = "data/my_database.duckdb"
 
 # Iceberg REST API Endpoint
 ICEBERG_API = "http://localhost:8181/v1/catalogs/my_catalog/namespaces/default/tables"
