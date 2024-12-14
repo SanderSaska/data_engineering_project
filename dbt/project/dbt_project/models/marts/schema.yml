@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: dim_air_quality
+    description: "Dimension table for air quality data."
+    columns:
+      - name: air_quality_id
+        description: "Unique identifier for the air quality dimension."
+      - name: Samplingpoint
+        description: "Sampling point for air quality measurement."
+      - name: Pollutant
+        description: "Pollutant being measured."
+      - name: Unit
+        description: "Unit of measurement for the pollutant."
+      - name: AggType
+        description: "Aggregation type of the air quality data."
+
+  - name: dim_calendar
+    description: "Dimension table for calendar information."
+    columns:
+      - name: calendar_id
+        description: "Unique identifier for the calendar dimension."
+      - name: calendar_year
+        description: "Year in the calendar."
+      - name: calendar_quarter
+        description: "Quarter of the year."
+      - name: calendar_month
+        description: "Month of the year."
+      - name: calendar_week
+        description: "Week of the year."
+      - name: calendar_day
+        description: "Day of the month."
+      - name: date_time
+        description: "Full date and time."
+      - name: calendar_year_week
+        description: "Combination of year and week for time tracking."
+
+  - name: dim_country
+    description: "Dimension table for country information."
+    columns:
+      - name: country_id
+        description: "Unique identifier for the country dimension."
+      - name: country_name
+        description: "Name of the country."
+      - name: lat
+        description: "Latitude of the country's location."
+      - name: lon
+        description: "Longitude of the country's location."
+      - name: country_code
+        description: "Country code as a two-character ISO code."
+
+  - name: dim_infections
+    description: "Dimension table for infections data."
+    columns:
+      - name: infection_id
+        description: "Unique identifier for the infection dimension."
+      - name: inf_source
+        description: "Source of infection data."
+      - name: pathogen
+        description: "Pathogen causing the infection."
+      - name: pathogentype
+        description: "Type of pathogen."
+      - name: pathogensubtype
+        description: "Subtype of pathogen."
+      - name: age
+        description: "Age group affected by the infection."
+      - name: inf_indicator
+        description: "Indicator value for the infection."
+
+  - name: dim_weather
+    description: "Dimension table for weather information."
+    columns:
+      - name: weather_id
+        description: "Unique identifier for the weather dimension."
+      - name: weather_code
+        description: "Code representing weather conditions."
+
+  - name: f_data
+    description: "Fact table combining data from calendar, weather, air quality, infections, and country dimensions."
+    columns:
+      - name: calendar_id
+        description: "Foreign key linking to the calendar dimension."
+      - name: weather_id
+        description: "Foreign key linking to the weather dimension."
+      - name: country_id
+        description: "Foreign key linking to the country dimension."
+      - name: air_quality_id
+        description: "Foreign key linking to the air quality dimension."
+      - name: infection_id
+        description: "Foreign key linking to the infections dimension."
+      - name: pollutant_value
+        description: "Value of the pollutant measured at the sampling point."
+      - name: infection_value
+        description: "Value indicating the level of infections."
+      - name: temperature_2m_max
+        description: "Maximum temperature at 2 meters."
+      - name: temperature_2m_min
+        description: "Minimum temperature at 2 meters."
+      - name: apparent_temperature_max
+        description: "Maximum apparent temperature."
+      - name: apparent_temperature_min
+        description: "Minimum apparent temperature."
+      - name: precipitation_sum
+        description: "Total precipitation recorded."
+      - name: rain_sum
+        description: "Total rain recorded."
+      - name: showers_sum
+        description: "Total showers recorded."
+      - name: snowfall_sum
+        description: "Total snowfall recorded."
+      - name: wind_speed_10m_max
+        description: "Maximum wind speed at 10 meters."
+      - name: wind_gusts_10m_max
+        description: "Maximum wind gusts at 10 meters."

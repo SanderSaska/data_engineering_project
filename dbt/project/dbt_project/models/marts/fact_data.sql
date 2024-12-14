@@ -5,9 +5,9 @@ WITH all_data AS (
       we.id as we_id, 
       co.id as co_id, 
       aq.id as aq_id, 
-      infect.infection_id as infect_id
+      infect.infection_id as infect_id,
       aq.pollutant_value as pollutant_value,
-      infect.inf_value as infection_value
+      infect.inf_value as infection_value,
       temperature_2m_max,
       temperature_2m_min,
       apparent_temperature_max,
@@ -23,7 +23,7 @@ WITH all_data AS (
     JOIN {{ ref('stg_country') }} co on co.country_name = we.country_name
     JOIN {{ ref('stg_airQuality') }} aq on left(aq.Samplingpoint, 2) = co.country_code and aq.time_start = cal.date_time
     JOIN {{ ref('stg_infections') }} infect on infect.yearweek = cal.calendar_year_week and infect.countryname = co.country_name
-),
+)
 SELECT
   cal.calendar_id,
   we.weather_id,
@@ -47,4 +47,4 @@ JOIN {{ ref('dim_calendar') }} cal on ad.cal_id = cal.calendar_id
 JOIN {{ ref('dim_weather') }} we on ad.we_id = we.weather_id
 JOIN {{ ref('dim_country') }} co on ad.co_id = co.country_id
 JOIN {{ ref('dim_airQuality') }} aq on ad.aq_id = aq.air_quality_id
-JOIN {{ ref('dim_infections') }} infect on ad.infect_id = infect.infection_id
+JOIN {{ ref('dim_infections') }} infect on ad.infect_id = infect.infection_id;

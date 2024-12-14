@@ -14,4 +14,13 @@ dbt_project:
       path: /app/data/raw_data.duckdb  # Location of DuckDB file for staging
       schema: staging  # Logical schema for staging tables in DuckDB
 
-  target: postgres_source # ??? might change
+  target: "{{ env_var('DBT_TARGET', 'postgres_source') }}"
+
+
+#export DBT_TARGET=postgres_source
+#dbt run --models staging
+
+#export DBT_TARGET=duckdb_target
+#dbt run --models marts
+
+# nii kaua kui see pole airflowga tehtud
