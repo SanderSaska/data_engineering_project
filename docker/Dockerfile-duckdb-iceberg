@@ -28,5 +28,12 @@ RUN arch=$(dpkg --print-architecture) && \
 # Install DuckDB via pip for Python use
 RUN pip install --no-cache-dir duckdb pyarrow pyiceberg[s3fs,duckdb,hive,sql-sqlite,pyarrow]
 
+# Copy the entrypoint script from the docker directory to the container
+COPY duckdb_entrypoint.sh /duckdb_entrypoint.sh
+RUN chmod +x /duckdb_entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/duckdb_entrypoint.sh"]
+
 # Set the default command to launch DuckDB CLI
 CMD ["duckdb"]
