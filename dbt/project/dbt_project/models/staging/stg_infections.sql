@@ -35,4 +35,4 @@ SELECT
     age,
     inf_indicator,
     inf_value
-FROM raw_infections
+FROM raw_infections;

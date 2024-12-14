@@ -80,6 +80,7 @@ services:
     volumes:
       - ./dbt/project/dbt_project:/usr/app
       - ./dbt/.dbt:/root/.dbt
+      - ./data:/app/data
     networks:
       - airflow-net
 

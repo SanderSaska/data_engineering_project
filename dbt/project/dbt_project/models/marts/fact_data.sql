@@ -47,4 +47,4 @@ JOIN {{ ref('dim_calendar') }} cal on ad.cal_id = cal.calendar_id
 JOIN {{ ref('dim_weather') }} we on ad.we_id = we.weather_id
 JOIN {{ ref('dim_country') }} co on ad.co_id = co.country_id
 JOIN {{ ref('dim_airQuality') }} aq on ad.aq_id = aq.air_quality_id
-JOIN {{ ref('dim_infections') }} infect on ad.infect_id = infect.infection_id
+JOIN {{ ref('dim_infections') }} infect on ad.infect_id = infect.infection_id;
