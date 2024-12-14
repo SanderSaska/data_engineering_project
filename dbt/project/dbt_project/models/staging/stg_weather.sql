@@ -33,3 +33,4 @@ SELECT
     wind_speed_10m_max,
     wind_gusts_10m_max
 FROM raw_weather_data
+where weather_date > '2020-06-01 00:00:00'
