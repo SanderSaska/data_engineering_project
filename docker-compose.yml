@@ -65,6 +65,21 @@ services:
     networks:
       - airflow-net
 
+  # Airflow Metadata Database Service
+  airflow-metadata:
+    image: postgres:15
+    container_name: airflow_metadata_db
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow_metadata
+    ports:
+      - "5433:5432"  # Expose on a different port to avoid conflict
+    volumes:
+      - airflow_metadata_data:/var/lib/postgresql/data
+    networks:
+      - airflow-net
+
   dbt:
     image: ghcr.io/dbt-labs/dbt-postgres:1.8.2
     container_name: dbt
@@ -81,21 +96,6 @@ services:
       - ./dbt/project/dbt_project:/usr/app
       - ./dbt/.dbt:/root/.dbt
       - ./data:/app/data
-    networks:
-      - airflow-net
-
-  # Airflow Metadata Database Service
-  airflow-metadata:
-    image: postgres:15
-    container_name: airflow_metadata_db
-    environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow_metadata
-    ports:
-      - "5433:5432"  # Expose on a different port to avoid conflict
-    volumes:
-      - airflow_metadata_data:/var/lib/postgresql/data
     networks:
       - airflow-net
 
@@ -148,13 +148,11 @@ services:
       context: ./docker
       dockerfile: Dockerfile-duckdb-iceberg
     volumes:
-      - ./data/duckdb_data:/app/data
+      - ./data:/app/data
     stdin_open: true
     tty: true
-    environment:
-      PYICEBERG_HOME: /app/data
     networks:
-      airflow-net:
+      - airflow-net
 
   minio:
     image: minio/minio:RELEASE.2024-10-13T13-34-11Z
