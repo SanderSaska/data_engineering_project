@@ -1,7 +1,12 @@
 import os
 import git
 
-def manage_git_repo(repo_url: str, repo_dir: str):
+
+repo_url = "https://github.com/EU-ECDC/Respiratory_viruses_weekly_data.git"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+repo_dir = os.path.join(script_dir,"../raw_data/Respiratory_viruses_weekly_data")
+
+def manage_git_repo(repo_url: str, repo_dir: str) -> str:
     """
     Checks if a directory is a git repository with the specified remote.
     If it is, the script fetches and pulls the latest changes.
@@ -10,6 +15,9 @@ def manage_git_repo(repo_url: str, repo_dir: str):
     Args:
         repo_url (str): The URL of the remote git repository.
         repo_dir (str): The local directory where the repo should be located.
+    
+    Returns:
+        str: The path to the directory where the repository is stored.
     """
     try:
         if os.path.exists(repo_dir):
@@ -37,6 +45,8 @@ def manage_git_repo(repo_url: str, repo_dir: str):
             clone_repo(repo_url, repo_dir)
     except Exception as e:
         print(f"An error occurred: {e}")
+    
+    return repo_dir
 
 def clone_repo(repo_url: str, repo_dir: str):
     """Clones the git repository to the specified directory."""
@@ -47,8 +57,11 @@ def clone_repo(repo_url: str, repo_dir: str):
     except Exception as e:
         print(f"Failed to clone repository: {e}")
 
+def main():
+    result_path = manage_git_repo(repo_url, repo_dir)
+    return result_path
+
 if __name__ == "__main__":
-    repo_url = "https://github.com/EU-ECDC/Respiratory_viruses_weekly_data.git"
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_dir = os.path.join(script_dir,"../raw_data/Respiratory_viruses_weekly_data")
-    manage_git_repo(repo_url, repo_dir)
+    path = main()
+    print(f"Repository is stored at: {path}")
+    

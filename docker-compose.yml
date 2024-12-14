@@ -168,6 +168,9 @@ services:
     tty: true
     networks:
       - airflow-net
+    environment:
+      - DUCKDB_DATABASE_PATH=/app/data/my_database.duckdb
+
 
   minio:
     image: minio/minio:RELEASE.2024-10-13T13-34-11Z

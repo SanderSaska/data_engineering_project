@@ -2,6 +2,7 @@ import requests
 import csv
 import os
 
+# erviss data is available for the following countries
 selected_countries = [
     "Austria",
     "Belgium",
@@ -79,6 +80,8 @@ def save_country_data_to_csv(country_data_list, filename="geo_data.csv"):
     Args:
         country_data_list (list of dicts): List containing country geo data.
         filename (str): Name of the CSV file.
+    Returns:
+        str: Path to the generated file.
     """
     try:
         with open(filename, mode='w', newline='') as file:
@@ -96,8 +99,10 @@ def save_country_data_to_csv(country_data_list, filename="geo_data.csv"):
                         country_data['country_code'].upper()
                     ])
         print(f"Successfully saved data to {filename}.")
+        return filename
     except Exception as e:
         print(f"Failed to save data to {filename}: {e}")
+        return None
 
 def main(country_names):
     country_data_list = []
@@ -105,11 +110,14 @@ def main(country_names):
         print(f"Processing {country_name}...")
         country_data = get_country_data(country_name)
         if country_data:
-            #print(country_data)
             country_data_list.append(country_data)
     os.makedirs(csv_path, exist_ok=True)
     csv_filepath = os.path.join(csv_path, csv_filename)
-    save_country_data_to_csv(country_data_list, csv_filepath)
+    return save_country_data_to_csv(country_data_list, csv_filepath)
 
 if __name__ == "__main__":
-    main(selected_countries)
+    generated_file_path = main(selected_countries)
+    if generated_file_path:
+        print(f"File generated at: {generated_file_path}")
+    else:
+        print("Failed to generate the file.")

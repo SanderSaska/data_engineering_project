@@ -50,6 +50,20 @@ def insert_data_to_db(conn, df, table_name):
         table_name: Name of the table where the data will be inserted.
     """
     try:
+        # Get the latest week from the db
+        latest_week = pd.read_sql(
+            f"SELECT yearweek FROM {table_name} ORDER BY CAST(SPLIT_PART(yearweek, '-W', 1) AS INTEGER) DESC, CAST(SPLIT_PART(yearweek, '-W', 2) AS INTEGER) DESC LIMIT 1;", 
+            conn
+        )
+        if not latest_week.empty:
+            latest_week_value = latest_week.iloc[0, 0]  # Safely access the value
+            latest_year, latest_week = map(int, latest_week_value.split('-W'))
+
+        else:
+            latest_week_value = None  # No result, set a default value (like None)
+            latest_year, latest_week = None, None  # Set default values
+        
+        
         cursor = conn.cursor()
         
         # Dynamically build the insert query
@@ -60,14 +74,24 @@ def insert_data_to_db(conn, df, table_name):
             sql.SQL(', ').join(map(sql.Identifier, columns)),
             sql.SQL(placeholders)
         )
+        counter = 0
         
         # Loop through DataFrame rows and insert each record
         for index, row in df.iterrows():
+
+            # Skip the row if the week is equal or less than the latest week in the db
+            if latest_week_value is not None:
+                row_year, row_week = map(int, row['yearweek'].split('-W'))
+                # Compare year and week correctly
+                if (row_year < latest_year) or (row_year == latest_year and row_week <= latest_week):
+                    continue
+
             cursor.execute(insert_query, tuple(row))
+            
         
         # Commit the transaction
         conn.commit()
-        print(f"Successfully inserted {len(df)} records into '{table_name}'.")
+        print(f"Successfully inserted {counter} records into '{table_name}'.")
     except Exception as e:
         conn.rollback()
         print(f"Failed to insert records into '{table_name}': {e}")
