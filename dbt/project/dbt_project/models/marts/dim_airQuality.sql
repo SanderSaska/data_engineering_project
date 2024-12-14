@@ -1,4 +1,4 @@
--- models/marts/dim_air_quality.sql
+-- models/marts/dim_airQuality.sql
 WITH staging_data AS (
     SELECT * FROM {{ ref('stg_airQuality') }}  -- Reference to the staging model
 )
