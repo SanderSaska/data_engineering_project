@@ -1,12 +1,26 @@
 dbt_project:
   outputs:
-    dev:
-      dbname: raw_data
+    postgres_source:  # Connect to PostgreSQL for raw data extraction
+      type: postgres
       host: postgres
-      pass: airflow
+      user: airflow
+      password: airflow
+      dbname: raw_data
       port: 5432
       schema: public
-      threads: 1
-      type: postgres
-      user: airflow
-  target: dev
+
+    duckdb_target:  # Connect to DuckDB for staging raw data
+      type: duckdb
+      path: /app/data/raw_data.duckdb  # Location of DuckDB file for staging
+      schema: staging  # Logical schema for staging tables in DuckDB
+
+  target: "{{ env_var('DBT_TARGET', 'postgres_source') }}"
+
+
+#export DBT_TARGET=postgres_source
+#dbt run --models staging
+
+#export DBT_TARGET=duckdb_target
+#dbt run --models marts
+
+# nii kaua kui see pole airflowga tehtud

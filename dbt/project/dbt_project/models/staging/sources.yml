@@ -1,0 +1,18 @@
+sources:
+  - name: postgres
+    database: raw_data
+    schema: public
+    tables:
+      - name: airQuality
+      - name: calendar
+      - name: country
+      - name: activityflutypesubtype
+      - name: iliarirates
+      - name: nonsentinelseverity
+      - name: nonsentineltestsdetections
+      - name: sarirates
+      - name: saritestsdetectionpositivity
+      - name: sentineltestsdetectionspositivity
+      - name: weather
+      #- name: 
+      #- name: 
