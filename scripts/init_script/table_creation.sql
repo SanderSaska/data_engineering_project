@@ -35,7 +35,8 @@ CREATE TABLE calendar (
     calendar_month INTEGER,
     calendar_week INTEGER,
     calendar_day INTEGER,
-    date_time TIMESTAMP
+    date_time TIMESTAMP,
+    calendar_year_week TEXT
 );
 
 -- Weather-related tables

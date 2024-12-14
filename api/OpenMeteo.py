@@ -8,7 +8,7 @@ import time
 api_url = "https://historical-forecast-api.open-meteo.com/v1/forecast"
 
 # Define the parameters for the API request
-START_DATE = "2021-10-01"
+START_DATE = "2020-06-01"
 END_DATE = "2024-12-11"
 daily_metrics = [
     "weather_code", 
