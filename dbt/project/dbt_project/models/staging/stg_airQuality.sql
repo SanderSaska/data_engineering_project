@@ -19,4 +19,4 @@ SELECT
     FkObservationLog,
     file_Name
 FROM raw_air_quality
-WHERE pollutant_value IS NOT NULL
+WHERE pollutant_value IS NOT NULL and time_start > '2020-06-01 00:00:00'

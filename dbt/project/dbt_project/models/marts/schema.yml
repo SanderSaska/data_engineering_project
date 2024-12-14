@@ -14,6 +14,8 @@ models:
         description: "Unit of measurement for the pollutant."
       - name: AggType
         description: "Aggregation type of the air quality data."
+    post-hook:
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_pollutant FOREIGN KEY (pollutant_id) REFERENCES dim_pollutants(pollutant_id)"
 
   - name: dim_calendar
     description: "Dimension table for calendar information."
@@ -34,6 +36,8 @@ models:
         description: "Full date and time."
       - name: calendar_year_week
         description: "Combination of year and week for time tracking."
+    post-hook:
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_calendar_year FOREIGN KEY (calendar_year) REFERENCES dim_calendar_year(calendar_year)"
 
   - name: dim_country
     description: "Dimension table for country information."
@@ -48,6 +52,8 @@ models:
         description: "Longitude of the country's location."
       - name: country_code
         description: "Country code as a two-character ISO code."
+    post-hook:
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_country FOREIGN KEY (country_code) REFERENCES dim_countries(country_code)"
 
   - name: dim_infections
     description: "Dimension table for infections data."
@@ -66,6 +72,8 @@ models:
         description: "Age group affected by the infection."
       - name: inf_indicator
         description: "Indicator value for the infection."
+    post-hook:
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_infection FOREIGN KEY (infection_id) REFERENCES dim_infections(infection_id)"
 
   - name: dim_weather
     description: "Dimension table for weather information."
@@ -74,6 +82,8 @@ models:
         description: "Unique identifier for the weather dimension."
       - name: weather_code
         description: "Code representing weather conditions."
+    post-hook:
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_weather FOREIGN KEY (weather_id) REFERENCES dim_weather(weather_id)"
 
   - name: f_data
     description: "Fact table combining data from calendar, weather, air quality, infections, and country dimensions."
@@ -112,3 +122,9 @@ models:
         description: "Maximum wind speed at 10 meters."
       - name: wind_gusts_10m_max
         description: "Maximum wind gusts at 10 meters."
+    post-hook:
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_calendar FOREIGN KEY (calendar_id) REFERENCES dim_calendar(calendar_id)"
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_weather FOREIGN KEY (weather_id) REFERENCES dim_weather(weather_id)"
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_country FOREIGN KEY (country_id) REFERENCES dim_country(country_id)"
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_air_quality FOREIGN KEY (air_quality_id) REFERENCES dim_air_quality(air_quality_id)"
+      - "ALTER TABLE {{ this }} ADD CONSTRAINT fk_{{ this.name }}_infection FOREIGN KEY (infection_id) REFERENCES dim_infections(infection_id)"
